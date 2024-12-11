@@ -21,16 +21,19 @@ function App() {
   };
 
   const markTodoAsCompleted = async (todo) => {
-    await axios.put(`http://localhost:9000/todos/${todo.id}`, {
+    const {data: updatedTodo} = await axios.put(`http://localhost:9000/todos/${todo.id}`, {
       ...todo,
       completed: true,
     });
-    getTodos();
+    const copyTodos = [...todos];
+    const index = copyTodos.findIndex(t => t.id === todo.id);
+    copyTodos[index] = updatedTodo;
+    setTodos(copyTodos);
   };
 
   const deleteTodoItem = async (id) => {
     await axios.delete(`http://localhost:9000/todos/${id}`);
-    getTodos();
+    setTodos(todos.filter(t => t.id !== id));
   }
 
   useEffect(() => {
